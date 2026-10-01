@@ -1,46 +1,33 @@
-# All We Core — Site Institucional
+# All We Core — site institucional
 
-Site institucional (MVP) construído em Flask, seguindo o PRD, SRS e Design System da pasta do projeto.
-
-## Stack
-- **Flask** (app factory + blueprints por página)
-- **Flask-WTF** (formulário com CSRF + honeypot anti-spam)
-- Front-end estático: HTML (Jinja) + CSS por camadas (tokens → base → layout → components → pages) + JS vanilla
-- Fontes: Sora + Inter (marca) · JetBrains Mono (utilitário)
+Site estático (HTML, CSS e JavaScript puro), sem etapa de build.
 
 ## Estrutura
+
 ```
-app/
-├── __init__.py        # application factory
-├── config.py          # config por ambiente
-├── blueprints/        # home, about, services, contact, legal, errors
-├── services/          # catalog.py (conteúdo) + leads.py (persistência)
-├── models/            # reservado p/ Fase 2 (CMS/CRM)
-├── utils/             # seo.py
-├── templates/         # base + partials + páginas
-└── static/            # css/ js/ images/ icons/
+index.html        página única
+css/style.css     estilos (tema escuro, verde #C6FF00)
+js/nav.js         menu: hover das letras, barra fixa, botão "Fale com a gente"
+js/hero.js        animação da teia + rede de partículas do topo
+js/services.js    roda 3D de serviços controlada pela rolagem
+js/ui.js          botão voltar ao topo, pausa de animações fora da tela
+assets/           logo, fotos de serviços, equipe e clientes
+vercel.json       cache e cabeçalhos de segurança
 ```
 
 ## Rodar localmente
+
+Qualquer servidor estático serve. Com Python:
+
 ```bash
-python -m venv venv
-venv\Scripts\activate        # Windows
-pip install -r requirements.txt
-copy .env.example .env       # e preencha SECRET_KEY etc.
-python run.py
+python -m http.server 8000
 ```
-Acesse https://allwecore.vercel.app
 
-## Onde editar
-- **Conteúdo (serviços, FAQ, processo, valores):** `app/services/catalog.py` — fonte única de verdade.
-- **Cores/tipografia/espaçamento:** `app/static/css/tokens.css` (derivado do manual de marca).
-- **Leads:** `app/services/leads.py` — MVP grava em `leads.csv`; trocar por CRM/webhook na Fase 2.
-- **Rastreamento (GA4/Pixel/GTM):** IDs via `.env`, injetados no `base.html`.
+Depois abra http://localhost:8000.
 
-## Pendências antes do lançamento
-- [ ] Substituir o símbolo placeholder (`partials/symbol.html`) pelo SVG oficial da marca.
-- [ ] Adicionar `static/images/og-default.png` (preview de compartilhamento).
-- [ ] Revisar textos legais (Privacidade/Termos) com jurídico.
-- [ ] Preencher depoimentos reais em `catalog.py` (TESTIMONIALS).
-- [ ] Configurar envio real de leads (e-mail/CRM) e carregamento condicional de GA4/Pixel após consentimento.
-```
+## Publicar
+
+1. Suba esta pasta para um repositório no GitHub.
+2. Na Vercel, clique em **Add New → Project**, importe o repositório e mantenha
+   **Framework Preset: Other** (sem comando de build, diretório raiz `/`).
+3. A cada `git push` na branch principal a Vercel publica automaticamente.

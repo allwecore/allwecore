@@ -1,14 +1,7 @@
-__pycache__/
-*.pyc
-.env
-venv/
-.venv/
-leads.csv
-instance/
 .DS_Store
-*.log
-
-# Material de marca (nao publicar)
-Identidade visual.png
-*.png
-!app/static/images/*.png
+Thumbs.db
+desktop.ini
+.vercel
+.env
+.env.*
+node_modules/

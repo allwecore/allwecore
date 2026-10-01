@@ -1,5 +1,0 @@
-from flask import Blueprint
-
-contact_bp = Blueprint("contact", __name__, url_prefix="/contato")
-
-from app.blueprints.contact import routes  # noqa: E402,F401
