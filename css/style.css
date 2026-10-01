@@ -13,6 +13,7 @@
 *{box-sizing:border-box;}
 html,body{height:100%;}
 html{ scroll-snap-type:y proximity; }
+@media (pointer:coarse){ html{ scroll-snap-type:none; } }
 .hero-wrap{ scroll-snap-align:start; }
 #quem-somos,#clientes,#contato{ scroll-margin-top:60px; }
 .anchor-alias{ position:absolute; top:0; left:0; scroll-margin-top:60px; }
@@ -221,7 +222,7 @@ h1{ font-family:'Sora',system-ui,sans-serif; letter-spacing:-0.02em; line-height
 /* ---- Services wheel (scroll-driven) ---- */
 .wheel-section{ position:relative; border-top:1px solid rgba(229,231,235,0.06); user-select:none; -webkit-user-select:none; }
 .wheel-snap{ position:absolute; left:0; width:1px; height:1px; scroll-snap-align:start; pointer-events:none; }
-.wheel-sticky{ position:sticky; top:0; height:100vh; min-height:560px; overflow:hidden; background:#060806; isolation:isolate; }
+.wheel-sticky{ position:sticky; top:0; height:100vh; height:100svh; min-height:520px; overflow:hidden; background:#060806; isolation:isolate; }
 .wheel-sticky > .bgfx{ z-index:0; }
 .wheel-eyebrow{
   position:absolute; z-index:3; top:calc(68px + clamp(12px,3vh,28px)); left:clamp(16px,4vw,48px); margin:0;

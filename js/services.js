@@ -25,6 +25,7 @@
   var UNIT = 0.42, TAIL = 0.25, EASE = 0.16;
   var count = ITEMS.length, last = count - 1;
   var reduced = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var coarse = window.matchMedia && window.matchMedia('(pointer: coarse)').matches;
 
   function clamp(v, lo, hi){ return Math.min(hi, Math.max(lo, v)); }
   function lerp(a, b, t){ return a + (b - a) * t; }
@@ -62,8 +63,11 @@
 
   var M = {}, narrow = false, turn = 0, target = 0, active = -1, dirty = true, unitPx = 1, hinted = false;
 
+  var lastW = -1, lastH = -1;
   function measure(){
     var w = stage.clientWidth, h = stage.clientHeight;
+    if (w === lastW && Math.abs(h - lastH) < 120) return;
+    lastW = w; lastH = h;
     narrow = w < 640;
     section.classList.toggle('is-narrow', narrow);
     var cardW = Math.min(h * CARD_H * CARD_RATIO, w * (narrow ? CARD_MAX_W_NARROW : CARD_MAX_W));
@@ -79,16 +83,18 @@
     titleEl.style.fontSize = Math.max(narrow ? 24 : 20, cardH * TITLE) + 'px';
     titleEl.style.maxWidth = narrow ? '' : Math.max(200, w/2 - cardW/2 - w*0.09) + 'px';
     indexEl.style.fontSize = Math.max(12, cardH * INDEX) + 'px';
-    unitPx = window.innerHeight * UNIT;
-    section.style.height = (Math.max(window.innerHeight, 560) + (last + 1 + TAIL) * unitPx) + 'px';
+    unitPx = h * UNIT;
+    section.style.height = (h + (last + 1 + TAIL) * unitPx) + 'px';
     snaps.forEach(function(sn, j){ sn.style.top = (j * unitPx) + 'px'; });
     dirty = true; readScroll();
   }
   function dwell(x){ var b = Math.floor(x), e = clamp((x - b - 0.18)/0.64, 0, 1); return b + e*e*(3-2*e); }
-  var lastY = window.pageYOffset, jumping = false;
+  var lastY = window.pageYOffset, jumping = false, upAcc = 0, UP_MIN = coarse ? 70 : 2;
   function readScroll(){
     var y = window.pageYOffset, top = section.getBoundingClientRect().top;
-    var goingUp = y < lastY - 2;
+    var dy = y - lastY;
+    upAcc = dy < 0 ? upAcc - dy : 0;
+    var goingUp = upAcc > UP_MIN;
     lastY = y;
     if (goingUp && !jumping && !programmatic && top < -4 && top > -(section.offsetHeight - window.innerHeight)){
       jumping = true;
@@ -97,7 +103,7 @@
       window.scrollTo(0, dest);
       document.documentElement.style.scrollBehavior = '';
       lastY = window.pageYOffset;
-      turn = 0; target = 0; dirty = true;
+      turn = 0; target = 0; dirty = true; upAcc = 0;
       setTimeout(function(){ jumping = false; }, 120);
       return;
     }
@@ -126,7 +132,7 @@
 
   measure(); setActive(0);
   if (window.ResizeObserver) new ResizeObserver(measure).observe(stage);
-  window.addEventListener('resize', measure);
+  else window.addEventListener('resize', measure);
   window.addEventListener('scroll', readScroll, { passive:true });
 
   function frame(){
