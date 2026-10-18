@@ -55,10 +55,14 @@
     card.addEventListener('click', function(){ scrollToTurn(i + 1); });
     card.addEventListener('keydown', function(e){ if (e.key === 'Enter' || e.key === ' '){ e.preventDefault(); scrollToTurn(i + 1); } });
     cards.push(card); faces.push(face);
-    var li = document.createElement('li'), btn = document.createElement('button');
-    btn.type = 'button'; btn.textContent = item.title;
+    var btn = indexEl.querySelectorAll('button')[i];
+    if (!btn){
+      var li = document.createElement('li'); btn = document.createElement('button');
+      btn.type = 'button'; btn.textContent = item.title;
+      li.appendChild(btn); indexEl.appendChild(li);
+    }
     btn.addEventListener('click', function(){ scrollToTurn(i + 1); });
-    li.appendChild(btn); indexEl.appendChild(li); buttons.push(btn);
+    buttons.push(btn);
   });
 
   var M = {}, narrow = false, turn = 0, target = 0, active = -1, dirty = true, unitPx = 1, hinted = false;
